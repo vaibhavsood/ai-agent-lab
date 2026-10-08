@@ -7,8 +7,8 @@ Each stage is a working agent plus notes on what I learned building it.
 
 | # | Stage | Concept | Status |
 |---|-------|---------|--------|
-| 01 | [Agent from scratch](01-agent-from-scratch/) | Tool calling + the agent loop, no framework | In progress |
-| 02 | Tools with side effects | write_file, run_command, human approval | |
+| 01 | [Agent from scratch](01-agent-from-scratch/) | Tool calling + the agent loop, no framework | Built, not yet run |
+| 02 | [Tools with approval](02-tools-with-approval/) | write_file, run_command, human approval | Built, offline-tested |
 | 03 | Computer agent | Real personal tasks (e.g. organize Downloads) | |
 | 04 | Memory + state | Persisting across sessions | |
 | 05 | MCP | Standardized tool integration | |

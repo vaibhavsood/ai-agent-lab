@@ -68,9 +68,42 @@ time. No fixed plan would have predicted those failures.
 
 ---
 
+## Human-in-the-loop approval
+
+Approval lives in my loop, not in the model. Before a tool with side effects
+runs, my code shows the human the exact action and asks y/n.
+
+- **Yes**: run the tool as normal.
+- **No**: don't run it. Send back a `tool_result` like
+  `"The user declined this action. Their reason: ..."` with `is_error: true`.
+
+The model never sees an "approval" feature. It just sees a tool result and
+adapts, so the human becomes one more source of tool results. A reason makes
+the decline useful: "use greet.py instead" steers the next step.
+
+---
+
+## Sandboxes have limits
+
+A path check protects file tools (`write_file` can't leave `--root`). It does
+**not** protect `run_command`: a shell command can touch anything my user
+account can. Know which guard protects which tool.
+
+---
+
+## Testing agents offline
+
+Mock the parts I don't control. Replacing `input()` with a function that
+returns scripted answers tests the approval gate without a human or an API
+key. The same trick works for the model: script its `tool_use` replies.
+
+---
+
 ## Guardrails (so far)
 
 - Max step limit, so a confused model can't loop forever
 - Path sandboxing, so tools can't read outside an allowed root
 - Tool errors are returned to the model (`is_error: true`) instead of crashing,
   so it can recover
+- Human approval before any tool with side effects (stage 02)
+- Timeouts on commands, so a hung program can't freeze the agent (stage 02)
