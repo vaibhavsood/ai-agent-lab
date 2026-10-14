@@ -29,6 +29,9 @@ Don't invent insights I didn't have.
 
 ## Conventions
 
-- Python, Anthropic SDK (`anthropic`), model `claude-opus-5` unless a stage says otherwise.
-- API key comes from the `ANTHROPIC_API_KEY` environment variable. Never hardcode or commit it.
+- Python. I don't pay for API usage, so runnable stages must work on a **free** model:
+  Gemini free tier (`google-genai`, `gemini-3.8-flash`, key in `GEMINI_API_KEY`).
+  Claude versions (`anthropic`, `claude-opus-5`) are kept for comparison.
+- Free-tier Gemini data may be used by Google: only run agents on the lab or a sandbox folder.
+- API keys come from environment variables. Never hardcode or commit them.
 - Each stage is a self-contained folder `NN-name/` with `agent.py`, `README.md`, `requirements.txt`.

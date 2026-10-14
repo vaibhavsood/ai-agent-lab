@@ -99,6 +99,29 @@ key. The same trick works for the model: script its `tool_use` replies.
 
 ---
 
+## The agent pattern doesn't depend on the provider
+
+Moving stage 02 from Claude to Gemini changed only:
+1. the wrapper around tool schemas (`input_schema` vs `"type": "function"` + `parameters`)
+2. the model call and reply shape (`messages` / `tool_use` / `tool_result` vs
+   `input` / `function_call` / `function_result`)
+
+Tools, approval, sandbox and loop logic stayed byte-for-byte the same. Every
+provider has the same three ideas: describe tools, the model requests a call
+with an id, you return a result with that id.
+
+---
+
+## Client-side vs server-side history
+
+- **Client-side (stateless):** I resend the full history each call. I can see
+  and edit everything, but I pay for re-sending it every step.
+- **Server-side (stateful):** the provider stores the history and I send only an
+  id (Gemini's `previous_interaction_id`). Cheaper to send, but the state is
+  hidden from me.
+
+---
+
 ## Guardrails (so far)
 
 - Max step limit, so a confused model can't loop forever
