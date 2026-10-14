@@ -122,6 +122,18 @@ with an id, you return a result with that id.
 
 ---
 
+## An agent is only as accurate as its tools' output
+
+First real run: the answer's logic was right, but the line numbers it cited
+were made up. `read_file` returned plain text with no line numbers, so the
+model had to count, and LLMs count badly. The system prompt asked for
+something the tools made impossible to do accurately.
+
+When an agent is wrong, check first what its tools actually returned. Fixes
+usually belong in the tool (e.g. number the lines), not in the prompt.
+
+---
+
 ## Guardrails (so far)
 
 - Max step limit, so a confused model can't loop forever
