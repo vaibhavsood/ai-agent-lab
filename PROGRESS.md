@@ -11,17 +11,24 @@
 - [x] 02b: Build the stage 02 agent on Gemini's free tier (offline tests pass)
 - [x] 02b: Get a free Gemini key and run it for real (read-only question on the lab)
 - [ ] 02b: Run the write/approve/decline experiments in the sandbox
-- [ ] 03: Computer agent
-- [ ] 04: Memory + state
-- [ ] 05: MCP
-- [ ] 06: LangGraph
-- [ ] 07: Evaluation
-- [ ] 08: Production deployment
+- [x] 03: Downloads organizer (plan-then-execute), offline tests pass
+- [ ] 04: Context & memory (incl. API timeouts + retries)
+- [ ] 05: RAG
+- [ ] 06: Structured outputs & reasoning
+- [ ] 07: MCP
+- [ ] 08: Multi-agent
+- [ ] 09: Guardrails & security
+- [ ] 10: Evals & observability
+- [ ] 11: Frameworks & SDKs (LangGraph + agent SDKs)
+- [ ] 12: Local models (Ollama)
+- [ ] 13: Production
 
 ## Projects
 
 1. File investigation agent (01)
-2. File agent that writes and runs commands, with approval (02)
+2. File agent that writes and runs commands, with approval (02, 02b on Gemini)
+3. Downloads organizer, plan-then-execute (03, side stage)
+4. **My agent** (04 onward): the 02b agent, upgraded every stage
 
 ## Major lessons
 
@@ -31,6 +38,9 @@
 - 2026-10-14: Switching provider changed only the tool-schema wrapper and the model call. Tools, approval and loop logic stayed the same.
 - 2026-10-14: First real run. Right answer, made-up line numbers, because read_file returns no line numbers. Agents are only as accurate as their tools' output.
 
+- 2026-10-26: Plan-then-execute: review one validated plan instead of many prompts; the model decides, code acts, and everything can be undone.
+- 2026-10-26: Always set timeouts on API calls. Without one, a provider that never answers hangs the agent forever.
+
 ## Next milestone
 
-Run 02b in the sandbox and try approving and declining.
+Stage 04: add memory, context management and timeouts to the 02b agent.

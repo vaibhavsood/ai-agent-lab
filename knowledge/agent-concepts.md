@@ -134,6 +134,28 @@ usually belong in the tool (e.g. number the lines), not in the prompt.
 
 ---
 
+## Plan, then execute
+
+For many actions, have the model submit one structured plan (a tool call
+with a schema). Code validates it, the human reviews it once, and code
+executes it with an undo log. Per-action y/n doesn't scale: people stop reading.
+
+---
+
+## Least privilege
+
+Give the agent only the tools the task needs. The organizer has no delete
+tool, so it can't delete, whatever it decides.
+
+---
+
+## Timeouts
+
+An API call can hang forever. Every model call needs a timeout, plus a retry
+policy for transient errors.
+
+---
+
 ## Guardrails (so far)
 
 - Max step limit, so a confused model can't loop forever
