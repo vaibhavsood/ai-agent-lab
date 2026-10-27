@@ -13,7 +13,7 @@
 - [ ] 02b: Run the write/approve/decline experiments in the sandbox
 - [x] 03: Downloads organizer (plan-then-execute), offline tests pass
 - [x] 04: Context & memory (incl. API timeouts + retries); memory tested live, compaction unit-tested
-- [ ] 05: RAG
+- [x] 05: RAG over the lab, cited answers, tested live
 - [ ] 06: Structured outputs & reasoning
 - [ ] 07: MCP
 - [ ] 08: Multi-agent
@@ -44,6 +44,9 @@
 - 2026-10-27: The model decides when to remember; the tool description is the trigger. Long-term memory is just a file loaded into the system instruction.
 - 2026-10-27: Don't trust provider metrics blindly: Gemini's input-token count leaves out tool results. Measure what you send.
 
+- 2026-10-27: RAG = find the few relevant passages by meaning, answer only from them, cite them. Keyword and semantic search fail differently; combine them.
+- 2026-10-27: Free tiers have no availability guarantee: enforce your own deadlines and fall back to another model.
+
 ## Next milestone
 
-Stage 05: RAG over this lab's notes, with cited answers.
+Stage 06: structured outputs & reasoning.

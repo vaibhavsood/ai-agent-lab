@@ -189,6 +189,38 @@ itself is wrong.
 
 ---
 
+## Embeddings
+
+A model turns text into a vector (a list of numbers) so that texts with
+similar meaning get similar vectors. Compare vectors with cosine similarity.
+Scores are relative: the ranking matters more than the number.
+
+---
+
+## RAG (Retrieval-Augmented Generation)
+
+1. **Index** (once, and whenever notes change): chunk documents, embed each
+   chunk, store text + vector + source.
+2. **Retrieve:** embed the question, take the most similar chunks.
+3. **Generate:** the model answers only from those chunks and cites them.
+
+**Agentic RAG** makes retrieval a tool, so the model can decide when to search
+and search again with better words. Classic RAG always retrieves once.
+
+Quality depends on: chunk size (not too tiny, not too big), deduplication,
+index freshness, and the search method. Keyword search catches exact terms,
+semantic search catches paraphrases; **hybrid** uses both.
+
+---
+
+## Deadlines and fallbacks
+
+An SDK's timeout may not cover every way a call can hang. Enforce your own
+wall-clock deadline (run the call in a background thread, stop waiting).
+If a model keeps timing out, switch to a fallback model for the session.
+
+---
+
 ## Guardrails (so far)
 
 - Max step limit, so a confused model can't loop forever

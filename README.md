@@ -25,8 +25,8 @@ stages have open questions?", "Draft today's journal."
 
 | # | Stage | What the agent gains |
 |---|-------|----------------------|
-| 04 | Context & memory | Remembers across runs, summarizes long history, counts tokens, timeouts + retries |
-| 05 | RAG | Embeddings, chunking, vector search, cited answers over my notes and docs |
+| 04 ✅ | [Context & memory](04-context-and-memory/) | Remembers across runs, summarizes long history, counts tokens, timeouts + retries |
+| 05 ✅ | [RAG](05-rag/) | Embeddings, chunking, vector search, cited answers over my notes and docs |
 | 06 | Structured outputs & reasoning | JSON-schema outputs, thinking levels, plan-first |
 | 07 | MCP | Use existing MCP servers, then expose my tools as an MCP server |
 | 08 | Multi-agent | Orchestrator + sub-agents (researcher, reviewer); when not to |

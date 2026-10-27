@@ -72,7 +72,8 @@ Chat commands: `/memory`, `/compact`, `/exit`. Offline tests: `python test_conte
   Fixed with our own estimate.
 - **Open:** one live run hung overnight despite the 90 s timeout. Unconfirmed
   hypothesis: the timeout applies between chunks of the response, not to the
-  whole call. Fix later with a hard wall-clock deadline (stage 13).
+  whole call. **Confirmed and fixed in stage 05** (`with_deadline` + fallback model);
+  this stage's snapshot still has the bug.
 - Compaction is unit-tested but hasn't been seen triggering live yet.
 
 ## What I would improve
