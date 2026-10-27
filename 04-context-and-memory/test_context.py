@@ -104,4 +104,8 @@ agent.run_turn(client, history, "And now?", usage, summary)
 first = history[0]["content"]
 check("after compaction, the next message carries the summary", len(history) == 2 and "User asked" in first[0]["text"] and first[1]["text"] == "And now?")
 
+# 5. the size estimate counts tool results (the API's own count doesn't)
+big = [{"type": "function_result", "call_id": "x", "name": "read_file", "result": "x" * 8000}]
+check("estimate_tokens counts an 8,000-char tool result as ~2,000 tokens", 1900 < agent.estimate_tokens(big) < 2200)
+
 print("\nAll stage 04 checks passed.")

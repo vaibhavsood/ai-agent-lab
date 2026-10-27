@@ -12,7 +12,7 @@
 - [x] 02b: Get a free Gemini key and run it for real (read-only question on the lab)
 - [ ] 02b: Run the write/approve/decline experiments in the sandbox
 - [x] 03: Downloads organizer (plan-then-execute), offline tests pass
-- [ ] 04: Context & memory (incl. API timeouts + retries)
+- [x] 04: Context & memory (incl. API timeouts + retries); memory tested live, compaction unit-tested
 - [ ] 05: RAG
 - [ ] 06: Structured outputs & reasoning
 - [ ] 07: MCP
@@ -41,6 +41,9 @@
 - 2026-10-26: Plan-then-execute: review one validated plan instead of many prompts; the model decides, code acts, and everything can be undone.
 - 2026-10-26: Always set timeouts on API calls. Without one, a provider that never answers hangs the agent forever.
 
+- 2026-10-27: The model decides when to remember; the tool description is the trigger. Long-term memory is just a file loaded into the system instruction.
+- 2026-10-27: Don't trust provider metrics blindly: Gemini's input-token count leaves out tool results. Measure what you send.
+
 ## Next milestone
 
-Stage 04: add memory, context management and timeouts to the 02b agent.
+Stage 05: RAG over this lab's notes, with cited answers.

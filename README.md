@@ -17,6 +17,12 @@ Each stage is a working agent plus notes on what I learned building it.
 From 04 on, each stage adds a capability to the **same agent** (starting from
 02b). Each stage folder is a snapshot, so I can compare before and after.
 
+**The agent's job: a personal knowledge assistant for my own projects and notes.**
+Point it at a folder (this lab first), ask questions, get answers with sources,
+have it remember my preferences and make changes with my approval. Its first
+real user is this lab: "What did I learn about tool descriptions?", "Which
+stages have open questions?", "Draft today's journal."
+
 | # | Stage | What the agent gains |
 |---|-------|----------------------|
 | 04 | Context & memory | Remembers across runs, summarizes long history, counts tokens, timeouts + retries |

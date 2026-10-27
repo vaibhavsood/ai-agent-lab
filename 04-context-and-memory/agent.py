@@ -26,7 +26,9 @@ from pathlib import Path
 
 from google import genai
 
-MODEL = "gemini-3.8-flash"  # free tier
+# Free tier. The newest model (gemini-3.8-flash) was so queued on the free tier
+# that even "2+2" took 100+ seconds; 3.6-flash answered in ~7s (measured 2026-10-26).
+MODEL = "gemini-3.6-flash"
 MAX_STEPS = 15  # per user message
 TIMEOUT_SECONDS = 90
 MAX_RETRIES = 3
@@ -251,19 +253,30 @@ def call_model(client, **kwargs):
 
 
 class Usage:
-    """Running token totals, so you can watch the cost of resending history."""
+    """Running token totals as reported by the API."""
 
     def __init__(self):
-        self.last_input = 0
         self.total = 0
 
     def record(self, interaction):
         u = interaction.usage
         if u is None:
             return
-        self.last_input = u.total_input_tokens or 0
-        self.total += u.total_tokens or 0
-        print(f"[tokens] this call: {self.last_input} in, {u.total_output_tokens or 0} out | session total: {self.total}")
+        self.total += getattr(u, "total_tokens", None) or 0
+        print(f"[tokens] API reports: {getattr(u, 'total_input_tokens', None) or 0} in, "
+              f"{getattr(u, 'total_output_tokens', None) or 0} out | session total: {self.total}")
+
+
+def estimate_tokens(history: list) -> int:
+    """Our own estimate of how big the history is: ~4 characters per token.
+
+    We can't use the API's input count for this: Gemini's reported input does
+    NOT include function results (verified 2026-10-26: an 8,000-character file
+    counted as 2,218 tokens as user text, but added almost nothing as a
+    function_result). Tool results are most of an agent's context, so we
+    measure what we actually send.
+    """
+    return len(json.dumps(history, default=str)) // 4
 
 # --------------------------------------------------------------------------
 # 5. COMPACTION (new): replace old history with a summary
@@ -348,7 +361,7 @@ def chat(compact_at: int):
         if user_text == "/memory":
             print(load_memory() or "(memory is empty)")
             continue
-        if user_text == "/compact" or (history and usage.last_input > compact_at):
+        if user_text == "/compact" or estimate_tokens(history) > compact_at:
             if history:
                 before = len(history)
                 summary = compact(client, history, usage)
@@ -359,29 +372,35 @@ def chat(compact_at: int):
 
         answer = run_turn(client, history, user_text, usage, summary)
         summary = ""  # it's in history now
+        print(f"[context] history is now ~{estimate_tokens(history)} tokens (our estimate; compacts above {compact_at})")
         print(f"\nagent> {answer}\n")
 
     print(f"Bye. Tokens used this session: {usage.total}")
 
 
 def main():
-    global ROOT
+    global ROOT, MODEL
     parser = argparse.ArgumentParser(description="Agent #4: chat agent with memory and context management")
     parser.add_argument("--root", default=".", help="Directory the agent works in (default: current dir)")
+    parser.add_argument("--model", default=MODEL, help=f"Gemini model (default: {MODEL})")
     parser.add_argument("--compact-at", type=int, default=30_000,
-                        help="Compact when the last call's input exceeds this many tokens (default 30000)")
+                        help="Compact when the history is estimated above this many tokens (default 30000)")
     args = parser.parse_args()
 
     if not os.environ.get("GEMINI_API_KEY"):
         sys.exit("GEMINI_API_KEY is not set. Open a NEW terminal after setting it.")
 
     ROOT = Path(args.root).resolve()
+    MODEL = args.model
     print(f"Root: {ROOT}\nModel: {MODEL}  (compacts above {args.compact_at} input tokens)")
     try:
         chat(args.compact_at)
     except KeyboardInterrupt:
         print("\nStopped by user.")
     except Exception as e:
+        if "timeout" in type(e).__name__.lower():
+            sys.exit(f"Gave up: {MODEL} didn't answer within {TIMEOUT_SECONDS}s, {MAX_RETRIES + 1} times. "
+                     "The free tier may be overloaded; try --model gemini-3.5-flash-lite.")
         status = getattr(e, "status_code", None) or getattr(e, "code", None)
         if status is None:
             raise

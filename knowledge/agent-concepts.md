@@ -156,6 +156,39 @@ policy for transient errors.
 
 ---
 
+## Short-term vs long-term memory
+
+- **Short-term:** the history list, kept across messages in one chat.
+- **Long-term:** a file (`memory.md`) loaded into the system instruction at
+  startup. The model adds to it via a `remember` tool, when *it* judges a
+  fact durable. The tool description is what shapes that judgment.
+
+---
+
+## Compaction
+
+History grows every step. When it's too big (cost, speed, context limit),
+summarize it with the model and replace the history with the summary. Only
+compact between user turns, so no tool call is left without its result.
+
+---
+
+## Knowledge vs actions
+
+Tools limit what an agent can **do**. They don't limit what the model
+**knows**: it answers general questions from training data, with no source and
+possibly out of date. RAG is how you make it answer from *your* documents.
+
+---
+
+## Retries
+
+Retry what can succeed later (timeouts, 429 rate limits, 5xx server errors)
+with exponential backoff. Don't retry 4xx client errors like 400: the request
+itself is wrong.
+
+---
+
 ## Guardrails (so far)
 
 - Max step limit, so a confused model can't loop forever
