@@ -86,6 +86,8 @@ cd C:\Users\temp1\claude-learn\ai-agent-lab\05-rag
 | Why did we switch Gemini models? | Correct, cited my journal; impossible from training data |
 | How does the agent avoid running forever? | Searched twice (rewrote query to `MAX_STEPS`), correct, 3 citations; one citation was stale |
 | Capital of France? | "Paris", labeled as general knowledge, no search |
+| What is the ReAct pattern? (PDF only) | Top hit `library/agent-glossary.pdf p.2` (0.80); correct, cited `[p.2]`, and linked it to my own agent-loop notes |
+| What is tool poisoning? (PDF only) | Top hit `p.3` (0.74); correct, cited `[p.3]` |
 
 ## Problems I encountered
 
