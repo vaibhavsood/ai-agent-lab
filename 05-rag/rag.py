@@ -19,7 +19,7 @@ MAX_CHARS = 800  # target chunk size
 MIN_CHARS = 300  # don't start a new chunk at a heading until we have this much (avoids tiny fragments)
 BATCH = 90  # free tier: 100 embeddings per minute, and EACH TEXT in a batch counts as one
 
-INCLUDE = {".md", ".py"}
+INCLUDE = {".md", ".py", ".pdf"}
 SKIP_DIRS = {".git", ".venv", "venv", "__pycache__", "node_modules", "sandbox"}
 SKIP_FILES = {"memory.md"}  # personal; never sent to the free tier
 
@@ -56,6 +56,31 @@ def chunk_file(path: str, text: str, max_chars: int = MAX_CHARS, min_chars: int 
     return chunks
 
 
+def read_pdf_pages(path: Path) -> list[str]:
+    """Extract the text of each page. Scanned PDFs (images of text) give empty pages."""
+    from pypdf import PdfReader
+
+    return [page.extract_text() or "" for page in PdfReader(str(path)).pages]
+
+
+def chunk_pdf(path: str, pages: list[str], max_chars: int = MAX_CHARS) -> list[dict]:
+    """Chunk a PDF page by page, so every chunk can be cited by page number."""
+    chunks = []
+    for page_no, text in enumerate(pages, 1):
+        lines = [" ".join(l.split()) for l in text.splitlines()]  # tidy PDF spacing
+        buf, size = [], 0
+        for line in lines + [None]:  # None = end of page: flush what's left
+            if buf and (line is None or size + len(line) > max_chars):
+                body = "\n".join(buf).strip()
+                if len(body.replace(" ", "")) >= 20:
+                    chunks.append({"source": path, "start": page_no, "end": page_no, "unit": "page", "text": body})
+                buf, size = [], 0
+            if line:
+                buf.append(line)
+                size += len(line) + 1
+    return chunks
+
+
 def collect_chunks(root: Path) -> list[dict]:
     """All chunks under root, with exact duplicates merged.
 
@@ -69,7 +94,18 @@ def collect_chunks(root: Path) -> list[dict]:
             p = Path(dirpath, name)
             if p.suffix in INCLUDE and name not in SKIP_FILES:
                 rel = p.relative_to(root).as_posix()
-                for c in chunk_file(rel, p.read_text(encoding="utf-8", errors="replace")):
+                if p.suffix == ".pdf":
+                    try:
+                        file_chunks = chunk_pdf(rel, read_pdf_pages(p))
+                    except Exception as e:  # damaged or encrypted PDF: skip it, don't stop indexing
+                        print(f"  skipped {rel}: can't read PDF ({type(e).__name__})")
+                        continue
+                    if not file_chunks:
+                        print(f"  skipped {rel}: no text found (scanned PDF? would need OCR)")
+                        continue
+                else:
+                    file_chunks = chunk_file(rel, p.read_text(encoding="utf-8", errors="replace"))
+                for c in file_chunks:
                     if c["text"] in by_text:
                         by_text[c["text"]].setdefault("also_in", []).append(f"{rel}:{c['start']}-{c['end']}")
                     else:
@@ -167,6 +203,13 @@ def search(index: dict, query: str, embed, top_k: int = 5) -> list[dict]:
     return [{**c, "score": round(s, 3)} for s, c in scored[:top_k]]
 
 
+def cite(chunk: dict) -> str:
+    """How a chunk is cited: lines for text files, pages for PDFs."""
+    if chunk.get("unit") == "page":
+        return f"{chunk['source']} p.{chunk['start']}"
+    return f"{chunk['source']}:{chunk['start']}-{chunk['end']}"
+
+
 def format_results(results: list[dict]) -> str:
     """What the model sees: numbered passages, each with a citable source."""
     if not results:
@@ -174,5 +217,5 @@ def format_results(results: list[dict]) -> str:
     parts = []
     for i, r in enumerate(results, 1):
         also = f" (identical text also in {len(r['also_in'])} other file(s))" if r.get("also_in") else ""
-        parts.append(f"[{i}] {r['source']}:{r['start']}-{r['end']} (similarity {r['score']}){also}\n{r['text']}")
+        parts.append(f"[{i}] {cite(r)} (similarity {r['score']}){also}\n{r['text']}")
     return "\n\n".join(parts)

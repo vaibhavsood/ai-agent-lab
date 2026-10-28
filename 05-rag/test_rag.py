@@ -73,6 +73,21 @@ check("search_notes without an index says how to build one", "index.py" in agent
 agent.INDEX = index
 check("search_notes returns cited passages", "a.md:4-6" in agent.search_notes("when does the loop stop?"))
 
+# PDFs: text is extracted per page and cited by page number
+from make_sample_pdf import make_pdf
+
+pdf_root = Path(tempfile.mkdtemp())
+make_pdf(pdf_root / "paper.pdf", ["Introduction page about many things in general",
+                                    "The loop stops after max steps\nso the agent cannot run forever"])
+make_pdf(pdf_root / "scanned.pdf", ["", ""])  # no text layer, like a scanned document
+pdf_chunks = rag.collect_chunks(pdf_root)
+check("PDF text is extracted page by page", [c["start"] for c in pdf_chunks] == [1, 2] and "max steps" in pdf_chunks[1]["text"])
+check("PDF chunks are cited by page", rag.cite(pdf_chunks[1]) == "paper.pdf p.2")
+check("a PDF with no text (scanned) is skipped", all(c["source"] == "paper.pdf" for c in pdf_chunks))
+agent.ROOT = pdf_root
+check("read_file opens a PDF with page markers", "--- page 2 ---" in agent.read_file("paper.pdf"))
+check("read_file explains an empty (scanned) PDF", "no extractable text" in agent.read_file("scanned.pdf"))
+
 # 7. a call that hangs forever is abandoned at the deadline and retried
 import time
 real_sleep = time.sleep  # agent.time IS the time module, so patching it below affects everyone

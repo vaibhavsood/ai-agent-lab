@@ -65,6 +65,19 @@ cd C:\Users\temp1\claude-learn\ai-agent-lab\05-rag
 ..\.venv\Scripts\python test_rag.py       # 13 offline tests
 ```
 
+## PDFs
+
+- Put PDFs in `ai-agent-lab/library/` (git-ignored: PDFs are often personal,
+  copyrighted or large), then re-run `index.py`.
+- `pypdf` extracts text **per page**; chunks are cited by page:
+  `[library/paper.pdf p.3]`.
+- **Scanned PDFs** (images of text) have nothing to extract: they're skipped
+  with a warning. Supporting them would need OCR.
+- `read_file` can open a whole PDF (with `--- page N ---` markers).
+- Sample: `python make_sample_pdf.py` writes `library/agent-glossary.pdf`,
+  defining terms that are NOT in my notes (ReAct, context rot, tool poisoning).
+- Free tier: PDF text goes to Google. Nothing confidential.
+
 ## Experiments
 
 | Question | Result |

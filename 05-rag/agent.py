@@ -66,7 +66,14 @@ def list_files(path: str = ".") -> str:
 
 
 def read_file(path: str) -> str:
-    text = _safe_path(path).read_text(encoding="utf-8", errors="replace")
+    p = _safe_path(path)
+    if p.suffix.lower() == ".pdf":  # PDFs are binary: extract the text, marking each page
+        pages = rag.read_pdf_pages(p)
+        if not any(t.strip() for t in pages):
+            return f"{path}: {len(pages)} pages but no extractable text (scanned PDF?)"
+        text = "\n\n".join(f"--- page {n} ---\n{t}" for n, t in enumerate(pages, 1))
+    else:
+        text = p.read_text(encoding="utf-8", errors="replace")
     if len(text) > 50_000:
         return text[:50_000] + f"\n... (truncated; file is {len(text)} chars)"
     return text
@@ -183,9 +190,10 @@ TOOLS = [
           "that only matter for the current task, and don't save secrets.",
           {"fact": {"type": "string", "description": "One short, self-contained fact"}}, ["fact"]),
     _tool("search_notes",
-          "Semantic search over the user's indexed notes and code (journal, knowledge base, stage READMEs, "
-          "agent code). Finds passages similar in MEANING to the query, even without shared words. Returns "
-          "numbered passages, each with a source like 'journal/2026-10-14.md:12-30'. Use it for any question "
+          "Semantic search over the user's indexed notes, code and PDF documents (journal, knowledge base, "
+          "stage READMEs, agent code, papers and other PDFs). Finds passages similar in MEANING to the query, "
+          "even without shared words. Returns numbered passages, each with a source like "
+          "'journal/2026-10-14.md:12-30' (lines) or 'library/paper.pdf p.3' (PDF page). Use it for any question "
           "about the user's projects, notes, or what they learned. Search again with different words if the "
           "first results don't answer the question.",
           {"query": {"type": "string", "description": "What to look for, phrased as a question or topic"},
@@ -201,7 +209,7 @@ BASE_SYSTEM = (
     "When the user tells you a durable preference or fact, save it with remember. "
     "For questions about the user's notes or projects, call search_notes first and answer ONLY from the "
     "passages it returns, citing each claim with its source in square brackets, e.g. "
-    "[journal/2026-10-14.md:12-30]. If the passages don't contain the answer, say so plainly instead of "
+    "[journal/2026-10-14.md:12-30] or [library/paper.pdf p.3]. If the passages don't contain the answer, say so plainly instead of "
     "guessing. When you answer from general knowledge instead, say that it's not from the user's notes."
 )
 
