@@ -14,7 +14,7 @@
 - [x] 03: Downloads organizer (plan-then-execute), offline tests pass
 - [x] 04: Context & memory (incl. API timeouts + retries); memory tested live, compaction unit-tested
 - [x] 05: RAG over the lab, cited answers, tested live
-- [ ] 06: Structured outputs & reasoning
+- [x] 06: Structured, verified answers + thinking-level experiment
 - [ ] 07: MCP
 - [ ] 08: Multi-agent
 - [ ] 09: Guardrails & security
@@ -47,6 +47,9 @@
 - 2026-10-27: RAG = find the few relevant passages by meaning, answer only from them, cite them. Keyword and semantic search fail differently; combine them.
 - 2026-10-27: Free tiers have no availability guarantee: enforce your own deadlines and fall back to another model.
 
+- 2026-11-02: Don't trust model output that code can check: structured JSON answers + citation verification against the real files.
+- 2026-11-02: Match thinking to the task. Extra reasoning didn't help lookup questions; it costs tokens and time.
+
 ## Next milestone
 
-Stage 06: structured outputs & reasoning.
+Stage 07: MCP.

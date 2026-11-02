@@ -221,6 +221,30 @@ If a model keeps timing out, switch to a fallback model for the session.
 
 ---
 
+## Structured outputs
+
+Give the model a **schema** (JSON Schema: fields, types, required) and ask the
+API to enforce it (`response_format`). The reply is then data your code can
+use (`answer["citations"]`), not prose to parse. Still parse defensively.
+
+---
+
+## Verify, don't trust
+
+If code can check a model's claim, check it. Citations: read the cited file
+lines / PDF page and confirm the quote is really there. On failure, send the
+problems back for ONE fix (self-correction), then show honest ✓/✗.
+
+---
+
+## Reasoning ("thinking") levels
+
+Models can reason before answering; more reasoning costs tokens and time.
+It helps multi-step problems (planning, comparing, debugging), not lookups.
+Measure on your own tasks, and over many runs: one run is an anecdote.
+
+---
+
 ## Guardrails (so far)
 
 - Max step limit, so a confused model can't loop forever
