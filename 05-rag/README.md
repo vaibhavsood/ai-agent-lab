@@ -65,6 +65,14 @@ cd C:\Users\temp1\claude-learn\ai-agent-lab\05-rag
 ..\.venv\Scripts\python test_rag.py       # 13 offline tests
 ```
 
+## Several folders, several indexes
+
+```powershell
+..\.venv\Scripts\python index.py --root "C:\path\to\folder" --out desktop.json
+..\.venv\Scripts\python agent.py --root "C:\path\to\folder" --index desktop.json
+```
+Every `05-rag/*.json` is git-ignored: indexes contain copies of the indexed text.
+
 ## PDFs
 
 - Put PDFs in `ai-agent-lab/library/` (git-ignored: PDFs are often personal,
@@ -103,6 +111,10 @@ cd C:\Users\temp1\claude-learn\ai-agent-lab\05-rag
 
 ## What I would improve
 
+- **A similarity threshold.** Top-5 search always returns 5 passages, even when
+  none are relevant; only the model's reading decides "not in my notes". With
+  gemini-embedding-2, relevant hits scored ~0.65-0.80 and unrelated ones
+  ~0.48-0.51. Calibrate a cutoff (~0.6) on known in/out questions.
 - Hybrid search (keywords + embeddings).
 - Incremental re-indexing (only changed files).
 - A vector database once there are many thousands of chunks.

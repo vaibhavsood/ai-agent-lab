@@ -26,7 +26,10 @@ INDEX_FILE = Path(__file__).parent / "index.json"
 def main():
     parser = argparse.ArgumentParser(description="Build the RAG index")
     parser.add_argument("--root", default=str(Path(__file__).resolve().parents[1]), help="Folder to index (default: the lab)")
+    parser.add_argument("--out", default=str(INDEX_FILE),
+                        help="Index file to write (default: index.json). Use a different name per folder, e.g. desktop.json")
     args = parser.parse_args()
+    out = Path(args.out)
     if not os.environ.get("GEMINI_API_KEY"):
         sys.exit("GEMINI_API_KEY is not set. Open a NEW terminal after setting it.")
 
@@ -38,9 +41,9 @@ def main():
 
     t = time.time()
     index = rag.build_index(root, rag.gemini_embedder(genai.Client()))
-    rag.save_index(index, INDEX_FILE)
-    print(f"Embedded with {rag.EMBED_MODEL} in {time.time() - t:.1f}s -> {INDEX_FILE.name} "
-          f"({INDEX_FILE.stat().st_size // 1024} KB)")
+    rag.save_index(index, out)
+    print(f"Embedded with {rag.EMBED_MODEL} in {time.time() - t:.1f}s -> {out.name} "
+          f"({out.stat().st_size // 1024} KB)")
 
 
 if __name__ == "__main__":

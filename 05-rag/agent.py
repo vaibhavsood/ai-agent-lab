@@ -461,6 +461,7 @@ def main():
     parser = argparse.ArgumentParser(description="Agent #5: chat agent with memory and RAG over your notes")
     parser.add_argument("--root", default=".", help="Directory the agent works in (default: current dir)")
     parser.add_argument("--model", default=MODEL, help=f"Gemini model (default: {MODEL})")
+    parser.add_argument("--index", default=str(INDEX_FILE), help="Index file to search (default: index.json)")
     parser.add_argument("--compact-at", type=int, default=30_000,
                         help="Compact when the history is estimated above this many tokens (default 30000)")
     args = parser.parse_args()
@@ -472,7 +473,7 @@ def main():
     MODEL = args.model
     print(f"Root: {ROOT}\nModel: {MODEL}  (compacts above {args.compact_at} input tokens)")
 
-    INDEX = rag.load_index(INDEX_FILE)
+    INDEX = rag.load_index(Path(args.index))
     EMBED = rag.gemini_embedder(genai.Client())
     if INDEX is None:
         print("Notes index: none yet. Run `python index.py` to enable search_notes.")
