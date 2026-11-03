@@ -15,7 +15,7 @@
 - [x] 04: Context & memory (incl. API timeouts + retries); memory tested live, compaction unit-tested
 - [x] 05: RAG over the lab, cited answers, tested live
 - [x] 06: Structured, verified answers + thinking-level experiment
-- [ ] 07: MCP
+- [x] 07: MCP server for my lab + agent as MCP client (lab-notes + fetch), tested live
 - [ ] 08: Multi-agent
 - [ ] 09: Guardrails & security
 - [ ] 10: Evals & observability
@@ -50,6 +50,8 @@
 - 2026-11-02: Don't trust model output that code can check: structured JSON answers + citation verification against the real files.
 - 2026-11-02: Match thinking to the task. Extra reasoning didn't help lookup questions; it costs tokens and time.
 
+- 2026-11-03: MCP = tools as separate, reusable servers. Adding a server means trusting its descriptions as much as its code.
+
 ## Next milestone
 
-Stage 07: MCP.
+Stage 08: multi-agent.

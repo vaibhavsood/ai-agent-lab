@@ -245,6 +245,20 @@ Measure on your own tasks, and over many runs: one run is an anecdote.
 
 ---
 
+## MCP (Model Context Protocol)
+
+A standard way for agents (clients) to use tools from separate programs
+(servers). The client asks "list your tools" (name, description, JSON schema:
+the same three things as any tool) and "call this tool with these arguments".
+Usually the client starts the server and talks over stdin/stdout.
+
+- One server works in every MCP client (Claude Code, Claude Desktop, my agent).
+- **Trust:** the server writes the descriptions your model reads, and they can
+  contain instructions. Its safety hints (`read_only_hint`) are self-reported.
+  Decide approval yourself.
+
+---
+
 ## Guardrails (so far)
 
 - Max step limit, so a confused model can't loop forever

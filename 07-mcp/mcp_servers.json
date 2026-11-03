@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "lab-notes": {
+      "command": "python",
+      "args": ["lab_server.py"],
+      "readOnly": true
+    },
+    "fetch": {
+      "command": "python",
+      "args": ["-m", "mcp_server_fetch"],
+      "readOnly": true
+    }
+  }
+}
