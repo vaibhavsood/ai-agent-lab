@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "lab-notes": {
+      "command": "C:\\Users\\temp1\\claude-learn\\ai-agent-lab\\.venv\\Scripts\\python.exe",
+      "args": ["C:\\Users\\temp1\\claude-learn\\ai-agent-lab\\07-mcp\\lab_server.py"]
+    }
+  }
+}
