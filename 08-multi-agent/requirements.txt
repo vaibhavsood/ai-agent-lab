@@ -1,0 +1,4 @@
+google-genai
+pypdf
+mcp>=2.3
+mcp-server-fetch

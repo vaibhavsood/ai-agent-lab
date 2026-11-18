@@ -29,7 +29,7 @@ stages have open questions?", "Draft today's journal."
 | 05 ✅ | [RAG](05-rag/) | Embeddings, chunking, vector search, cited answers over my notes and docs |
 | 06 ✅ | [Structured outputs & reasoning](06-structured-outputs/) | JSON-schema outputs, thinking levels, plan-first |
 | 07 ✅ | [MCP](07-mcp/) | Use existing MCP servers, then expose my tools as an MCP server |
-| 08 | Multi-agent | Orchestrator + sub-agents (researcher, reviewer); when not to |
+| 08 ✅ | [Multi-agent](08-multi-agent/) | Orchestrator + sub-agents (researcher, reviewer); when not to |
 | 09 | Guardrails & security | Prompt injection, permissions, output checks |
 | 10 | Evals & observability | Test sets, LLM-as-judge, tracing, cost tracking |
 | 11 | Frameworks & SDKs | Rebuild in LangGraph; compare Claude Agent SDK, Google ADK, OpenAI Agents SDK |

@@ -16,7 +16,7 @@
 - [x] 05: RAG over the lab, cited answers, tested live
 - [x] 06: Structured, verified answers + thinking-level experiment
 - [x] 07: MCP server for my lab + agent as MCP client (lab-notes + fetch), tested live
-- [ ] 08: Multi-agent
+- [x] 08: Multi-agent: lead + researchers + reviewer, parallel delegation, tested live
 - [ ] 09: Guardrails & security
 - [ ] 10: Evals & observability
 - [ ] 11: Frameworks & SDKs (LangGraph + agent SDKs)
@@ -52,6 +52,8 @@
 
 - 2026-11-03: MCP = tools as separate, reusable servers. Adding a server means trusting its descriptions as much as its code.
 
+- 2026-11-17: A sub-agent is a tool that runs another agent loop. Multi-agent buys context isolation and parallelism, and costs tokens and lost detail at every handoff. Give sub-agents a budget.
+
 ## Next milestone
 
-Stage 08: multi-agent.
+Stage 09: guardrails & security.

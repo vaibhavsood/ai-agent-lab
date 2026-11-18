@@ -257,6 +257,34 @@ Usually the client starts the server and talks over stdin/stdout.
   contain instructions. Its safety hints (`read_only_hint`) are self-reported.
   Decide approval yourself.
 
+## async / await (asyncio)
+
+One thread, many tasks. `await` suspends *this* task until its result is
+ready; meanwhile the event loop runs *other* tasks. Inside one task, lines
+still run strictly in order, so a line after an `await` never runs before the
+awaited result exists. Concurrency only comes from having several tasks
+(`asyncio.gather`, `create_task`). C++ view: `co_await` + a reactor (epoll/asio).
+`asyncio.run(main())` is the one bridge from normal code into async code.
+
+## Multi-agent (orchestrator + sub-agents)
+
+A lead agent delegates tasks to sub-agents, each with its own instructions,
+its own tools, and an empty history.
+
+- **Agents as tools:** a sub-agent is a tool whose function runs another
+  agent loop. Nothing new in the loop itself.
+- **Context isolation** is the real win: a researcher reads thousands of
+  tokens; only its short report reaches the lead.
+- **Parallel fan-out:** independent tasks requested in the same step run at
+  the same time.
+- **Costs:** every agent is extra model calls; a team uses several times the
+  tokens of one agent. Sub-agents over-research unless given a budget.
+- **Handoffs lose detail:** each hop can paraphrase (exact quotes got
+  distorted between researcher and lead). Verify at the end with code.
+- **When not to:** small or sequential tasks, or tasks where every step needs
+  the full context. Start with one agent; split when context or parallelism
+  is the bottleneck.
+
 ---
 
 ## Guardrails (so far)
@@ -267,3 +295,4 @@ Usually the client starts the server and talks over stdin/stdout.
   so it can recover
 - Human approval before any tool with side effects (stage 02)
 - Timeouts on commands, so a hung program can't freeze the agent (stage 02)
+- Per-agent tool lists enforced in dispatch, and step budgets for sub-agents (stage 08)
